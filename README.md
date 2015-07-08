@@ -94,6 +94,8 @@ type Plugin interface {
 
 type Accumulator interface {
   Add(measurement string, value interface{}, tags map[string]string)
+  AddWithTime(measurement string, value interface{}, tags map[string]string, timestamp time.Time)
+  AddValues(measurement string, values map[string]interface{}, tags map[string]string)
   AddValuesWithTime(measurement string, values map[string]interface{}, tags map[string]string, timestamp time.Time)
 }
 ```
@@ -113,9 +115,12 @@ The `Add` function takes 3 arguments:
   * **time.Time**: Useful for indicating when a state last occurred, for instance `light_on_since`.
 * **tags**: This is a map of strings to strings to describe the where or who about the metric. For instance, the `net` plugin adds a tag named `"interface"` set to the name of the network interface, like `"eth0"`.
 
-The `AddValuesWithTime` allows multiple values for a point to be passed. The values
-used are the same type profile as **value** above. The **timestamp** argument
-allows a point to be registered as having occurred at an arbitrary time.
+The `AddWithTime` function additionally takes a **timestamp** argument that allows a
+point to be registered as having occured at an arbitrary time.
+
+The `AddValues` function allows multiple values for a point to be passed. The values
+used are the same type profile as **value** above. `AddValuesWithTime` additionally
+takes a **timestamp** argument.
 
 Let's say you've written a plugin that emits metrics about processes on the current host.
 

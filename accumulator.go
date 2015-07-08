@@ -23,6 +23,10 @@ type BatchPoints struct {
 }
 
 func (bp *BatchPoints) Add(measurement string, val interface{}, tags map[string]string) {
+	bp.AddWithTime(measurement, val, tags, time.Now())
+}
+
+func (bp *BatchPoints) AddWithTime(measurement string, val interface{}, tags map[string]string, timestamp time.Time) {
 	bp.mu.Lock()
 	defer bp.mu.Unlock()
 
@@ -52,7 +56,16 @@ func (bp *BatchPoints) Add(measurement string, val interface{}, tags map[string]
 		Fields: map[string]interface{}{
 			"value": val,
 		},
+		Time: timestamp,
 	})
+}
+
+func (bp *BatchPoints) AddValues(
+	measurement string,
+	values map[string]interface{},
+	tags map[string]string,
+) {
+	bp.AddValuesWithTime(measurement, values, tags, time.Now())
 }
 
 func (bp *BatchPoints) AddValuesWithTime(

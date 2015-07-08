@@ -19,6 +19,10 @@ type Accumulator struct {
 }
 
 func (a *Accumulator) Add(measurement string, value interface{}, tags map[string]string) {
+	a.AddWithTime(measurement, value, tags, time.Now())
+}
+
+func (a *Accumulator) AddWithTime(measurement string, value interface{}, tags map[string]string, timestamp time.Time) {
 	if tags == nil {
 		tags = map[string]string{}
 	}
@@ -28,8 +32,17 @@ func (a *Accumulator) Add(measurement string, value interface{}, tags map[string
 			Measurement: measurement,
 			Value:       value,
 			Tags:        tags,
+			Time:        timestamp,
 		},
 	)
+}
+
+func (a *Accumulator) AddValues(
+	measurement string,
+	values map[string]interface{},
+	tags map[string]string,
+) {
+	a.AddValuesWithTime(measurement, values, tags, time.Now())
 }
 
 func (a *Accumulator) AddValuesWithTime(
